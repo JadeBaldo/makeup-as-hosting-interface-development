@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {PerformanceState,regionAt} from './state.mjs';
+const s=new PerformanceState();
+assert.deepEqual([regionAt(.2,.1),regionAt(.8,.1),regionAt(.2,.5),regionAt(.8,.5),regionAt(.2,.9),regionAt(.8,.9)],[0,1,2,3,4,5]);
+s.tick(2,{x:.1,y:.1,region:0});assert.equal(s.visible,true);assert(s.activity[0]>s.activity[1]);
+const frozen=JSON.stringify([s.paintTime,s.activity,s.stroke]);s.tick(10,null);assert.equal(JSON.stringify([s.paintTime,s.activity,s.stroke]),frozen);
+s.auto=false;const elapsed=s.elapsed;s.tick(500,null);assert.equal(s.elapsed,elapsed);
+s.auto=true;s.elapsed=179;s.tick(2,null);assert.equal(s.index,1);assert.equal(s.visible,false);assert.equal(s.paintTime,0);
+for(let i=0;i<10;i++)s.gesture('closed',.1);assert.equal(s.index,1);
+for(let i=0;i<6;i++)s.gesture('open',.1);for(let i=0;i<6;i++)s.gesture('closed',.1);assert.equal(s.index,2);
+for(let i=0;i<50;i++)s.gesture('closed',.1);assert.equal(s.index,2);
+s.index=5;s.advance();assert.equal(s.index,0);s.advance(-1);assert.equal(s.index,5);
+console.log('PASS: six regions, accumulation, lift freezes, paused timer, timed advance, gesture debounce, slide loop');
