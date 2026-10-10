@@ -1,19 +1,14 @@
 import * as THREE from 'three';
-// Replace this module to introduce custom shaders. update() receives only accumulated
-// painting time, never wall time: lifting the finger freezes material evolution.
+// Vertex colours carry saturated base text and local stroke/growth colours.
+// Opacity affects only painted/swollen vertices; unpainted text stays opaque.
 export function createTitleMaterial(){
- const material=new THREE.MeshPhysicalMaterial({color:0xffffff,metalness:.82,roughness:.09,clearcoat:1,clearcoatRoughness:.035,transmission:0,envMapIntensity:3,transparent:false,opacity:1});
- const growthMaterial=material.clone();
- growthMaterial.metalness=.58;
- growthMaterial.roughness=.075;
- growthMaterial.transparent=true;
- growthMaterial.opacity=.92;
- growthMaterial.depthWrite=false;
- growthMaterial.side=THREE.FrontSide;
- return {material,growthMaterial,update({titleHue,strokeHue,paintTime,opacity,activity,stroke,activeRegion}){
-  const blend=Math.min(.88,paintTime/65);
-  material.color.copy(new THREE.Color().setHSL(titleHue,.32,.72)).lerp(new THREE.Color().setHSL(strokeHue,.48,.60),blend);
-  growthMaterial.color.copy(material.color);
-  growthMaterial.opacity=opacity;
- },dispose(){material.dispose();growthMaterial.dispose();}};
+ const growthOpacity={value:.92};
+ const material=new THREE.MeshPhysicalMaterial({color:0xffffff,vertexColors:true,metalness:.65,roughness:.10,clearcoat:1,clearcoatRoughness:.04,envMapIntensity:2.5,transparent:true,opacity:1});
+ material.onBeforeCompile=shader=>{
+  shader.uniforms.growthOpacity=growthOpacity;
+  shader.vertexShader=shader.vertexShader.replace('#include <common>','#include <common>\nattribute float growthWeight;\nvarying float vGrowthWeight;').replace('#include <begin_vertex>','#include <begin_vertex>\nvGrowthWeight = growthWeight;');
+  shader.fragmentShader=shader.fragmentShader.replace('#include <common>','#include <common>\nuniform float growthOpacity;\nvarying float vGrowthWeight;').replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.a *= mix(1.0, growthOpacity, vGrowthWeight);');
+ };
+ material.customProgramCacheKey=()=> 'local-growth-opacity-v1';
+ return {material,update({opacity}){growthOpacity.value=opacity;},dispose(){material.dispose();}};
 }

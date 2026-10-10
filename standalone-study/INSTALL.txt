@@ -1,0 +1,44 @@
+ALTERED IMAGES — BLISTER STUDY PATCH 01
+
+Apply ONLY to the separate altered-images-deformation-study-01 folder.
+This patch does not update the webcam/performance project.
+
+1. Close the study tab. Keep a copy of your existing study folder if you want
+   to compare the old deformation.
+2. Copy these FOUR files into altered-images-deformation-study-01 and choose
+   Replace for matching names:
+      index.html
+      study.mjs
+      surface-study.mjs
+      surface-study.test.mjs
+   The fourth is the updated optional geometry test, not needed to run the page.
+3. Leave the existing vendor folder and serve.py in place.
+4. Open index.html with Live Server. Refresh with Ctrl+Shift+R if the old study
+   appears. The heading should say BLISTER PATHS 01 and the letter should be B.
+
+DRAWING
+Draw on the filled parts of the B with a mouse, touchscreen or stylus.
+The path leaves a connected raised ridge. Hold or retrace to inflate it faster.
+Previously drawn paths grow more slowly while you continue painting.
+Crossing a hole or leaving the letter breaks contact; blank spaces stay empty.
+Lift to freeze all attached growth. Detached fragments finish falling.
+Clear & restart resets both the paths and falling material.
+View angle is for inspection, and drawing remains mapped at different angles.
+
+COLOUR
+Choose cobalt/fuchsia, electric cyan/laser red, or ultraviolet/acid green.
+The first colour is the text. The stroke begins darker and the growth brightens
+within the same hue family. Text colour does not blend toward growth colour.
+
+SCOPE
+This is a procedural study: rupture is represented by a rapidly collapsing,
+darker channel and released fragments. It does not yet cut physical holes or
+simulate a tearing membrane. The path drives the letter's own surface; growth
+is not scattered from randomly placed dot sites. Webcam mapping and distribution
+across full titles come after visual review.
+
+TESTING
+Optional (Node.js): node surface-study.test.mjs
+Checks the actual B geometry, connected paths, local growth, freeze-on-lift,
+one-time rupture events, reset and finite geometry. Browser appearance and
+real-time drawing responsiveness still need testing on your laptop.

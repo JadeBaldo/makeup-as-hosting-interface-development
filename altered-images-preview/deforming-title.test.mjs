@@ -1,0 +1,48 @@
+import assert from 'node:assert/strict';
+import {registerHooks} from 'node:module';
+import {readFileSync} from 'node:fs';
+registerHooks({resolve(s,c,next){return s==='three'?{url:new URL('./vendor/three/three.module.js',import.meta.url).href,shortCircuit:true}:next(s,c);}});
+const THREE=await import('./vendor/three/three.module.js');
+const {FontLoader}=await import('./vendor/three/examples/jsm/loaders/FontLoader.js');
+const {createDeformingTitle}=await import('./deforming-title.mjs');
+const {createTitleMaterial}=await import('./material.mjs');
+const {createStrokeRenderer}=await import('./strokes.mjs');
+const {letterRotation}=await import('./letter-motion.mjs');
+const {TITLES}=await import('./state.mjs');
+const font=new FontLoader().parse(JSON.parse(readFileSync(new URL('./vendor/three/examples/fonts/gentilis_bold.typeface.json',import.meta.url))));
+const scene=new THREE.Scene(),root=new THREE.Group();scene.add(root);
+const surface=createTitleMaterial(),title=createDeformingTitle(root,scene,surface.material),ink=createStrokeRenderer(scene);
+title.build([{text:'BA',size:52}],font);assert.equal(title.letters.length,2);
+const letter=title.letters[0],base=letter.study.surface.attributes.position.array.slice(),pivotCenter=letter.pivot.position.clone();
+title.animate(0);const rotation=letter.pivot.rotation.clone();title.animate(5);
+assert.notEqual(letter.pivot.rotation.y,rotation.y);
+assert.notEqual(title.letters[0].pivot.rotation.y,title.letters[1].pivot.rotation.y);
+assert.deepEqual(letter.study.surface.attributes.position.array,base,'turning must not advance deformation');
+assert.deepEqual(letter.pivot.position,pivotCenter,'turn around own fixed centre, not an orbit');
+const camera=new THREE.OrthographicCamera(-150,150,100,-100,.1,1000);camera.position.z=300;camera.updateMatrixWorld(true);
+root.updateMatrixWorld(true);const target=letter.pivot.localToWorld(letter.study.center.clone()).project(camera),ray=new THREE.Raycaster();ray.setFromCamera(new THREE.Vector2(target.x,target.y),camera);
+assert(title.trace(ray,4,2));assert(letter.study.surface.attributes.position.array.some((v,i)=>v!==base[i]));
+const frozen=letter.study.surface.attributes.position.array.slice();title.lift();title.animate(10);title.fall(.1);
+assert.deepEqual(letter.study.surface.attributes.position.array,frozen,'drawing stops but letter motion continues');
+root.scale.setScalar(1.4);root.scale.setScalar(1);assert.deepEqual(letter.study.surface.attributes.position.array,frozen,'refitting a viewport preserves deformation');
+root.updateMatrixWorld(true);
+const current=letter.pivot.localToWorld(letter.study.center.clone()).project(camera);ray.setFromCamera(new THREE.Vector2(current.x,current.y),camera);
+assert(title.trace(ray,6,10));assert(title.detachedCount>0,'rupture must emit independent falling material');
+title.lift();const loose=scene.children.find(mesh=>mesh.geometry?.type==='SphereGeometry'),fallStart=loose.position.y;
+title.animate(15);title.fall(.5);assert(loose.position.y<fallStart,'detached material falls without drawing');
+ink.colour(.52);ink.add({x:.4,y:.5});ink.finish();const colour=scene.children[1].children[0].children[0].material.color.getHexString();
+title.build([{text:'B',size:52}],font);
+assert.equal(ink.count,1,'new title must preserve accumulated strokes');
+assert.equal(scene.children[1].children[0].children[0].material.color.getHexString(),colour);
+assert.equal(title.detachedCount,0);
+const before=title.letters[0].study.surface.attributes.position.array.slice();title.letters[0].study.step(1,null);assert.deepEqual(title.letters[0].study.surface.attributes.position.array,before);
+const shader={uniforms:{},vertexShader:'#include <common>\n#include <begin_vertex>',fragmentShader:'#include <common>\n#include <color_fragment>'};surface.material.onBeforeCompile(shader);surface.update({opacity:.2});
+assert.equal(surface.material.opacity,1);assert.equal(shader.uniforms.growthOpacity.value,.2);
+assert(shader.fragmentShader.includes('mix(1.0, growthOpacity, vGrowthWeight)'));
+for(let i=0;i<30;i++){const a=letterRotation(100,i);assert(Math.abs(a.y)<=.14);assert(Object.values(a).every(Number.isFinite));}
+// Exercise all actual programme glyphs, subtitles, accents and disposal.
+for(const cue of TITLES){const size=title.build([...cue.title.split('\n').map(text=>({text,size:52})),...(cue.subtitle?[{text:cue.subtitle,size:20}]:[])],font);
+ assert(size.x>0&&size.y>0);assert(title.letters.length>0);for(const glyph of title.letters)assert([...glyph.study.surface.attributes.position.array].every(Number.isFinite));
+}
+title.dispose();ink.dispose();surface.dispose();assert.equal(root.children.length,0);
+console.log('PASS: independent continuous glyph turning, moving-surface picking, frozen swelling, slide/stroke isolation, local opacity, all programme glyphs and disposal.');

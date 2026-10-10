@@ -1,4 +1,4 @@
-# Altered Images — aesthetic preview 01.4
+# Altered Images — body deformation preview 01.5
 
 Saved 10 October 2026. Mirrored webcam, six programme titles, opaque metallic lettering, soft glossy growths, and accumulated coloured 3D strokes. Makeup detection is deferred.
 
@@ -10,9 +10,11 @@ Three.js and the font are bundled. Webcam tracking downloads MediaPipe 0.10.17 s
 
 ## Behaviour
 
-Hold and drag on the rehearsal stage, or start the webcam and overlap your index fingertip with the face. This estimates overlap, not physical touch. Six face regions control growth, not automatic title selection.
+Hold and drag over the title letters in rehearsal mode, or start the webcam and overlap your index fingertip with the face. This estimates overlap, not physical touch. The screen position of the fingertip targets the moving title. Six face regions remain the interaction map, not automatic title selection. Independent 3D strokes still draw along the complete trace, even where it misses the lettering.
 
-Titles are centred across the composition. Title size reaches twice the new fit; growth control reaches 3. Lettering stays opaque; Growth opacity affects only attached growths. Reflections supply metallic highlights. Growth freezes when tracing stops.
+Titles are centred across the composition. Every letter turns gently around its own centre at a different speed and phase, continuously even when drawing stops. Drawing on the visible letter swells its front, bevels, walls and outline along a continuous path. Retracing strengthens the trail; rupture leaves distortion and falling material. Attached deformation freezes on lift, while letter turning and detached falling continue. Text stays saturated; local growth uses a brighter stroke colour. Growth opacity affects only painted/swollen areas; unpainted lettering stays opaque.
+
+Title size reaches twice the fit; Body swelling reaches 3. The old stalk-like jets are no longer used for rendering. Resize/fullscreen changes the title fit without rebuilding or resetting its deformation.
 
 Changing slides resets title growth but preserves existing strokes and colours. Default stroke colours are fixed per slide. Width and depth affect new strokes. Face-local strokes follow translation, scale and roll; overlays hide when the face is lost. Large head turns require testing.
 
@@ -43,8 +45,8 @@ Edit state.mjs to change titles. Original prototypes remain in originals/.
 
 ## Checks
 
-With Node.js installed: `node --test state.test.mjs jets.test.mjs strokes.test.mjs face-space.test.mjs`.
+With Node.js installed: `node --test state.test.mjs surface-study.test.mjs deforming-title.test.mjs strokes.test.mjs face-space.test.mjs jets.test.mjs`.
 
 Checks cover state, finite maximum-growth geometry, frozen growth, resize preservation, face mapping and stroke colour isolation. App/material syntax checks also pass. Camera and projector appearance still need live rehearsal.
 
-No actual makeup detection, fluid simulation, recording, or dual-camera coordination is included. Growths are procedural attached surfaces.
+No actual makeup detection, fluid simulation, recording, or dual-camera coordination is included. Topology remains fixed: extreme swelling can self-intersect and openings do not actually merge. Glyph geometry construction can briefly pause a slide change; deformation updates only the touched glyph. Camera and projector appearance need rehearsal; no rendered visual verification is claimed for 01.5. The saved 01.4 ZIP remains unchanged.
