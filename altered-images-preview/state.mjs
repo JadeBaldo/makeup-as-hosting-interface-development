@@ -1,4 +1,3 @@
-export const SLIDE_SECONDS=180;
 export const TITLES = [
  {title:'ALTERED IMAGES',subtitle:'VOL. VII'},
  {title:'CINEWAVE',subtitle:'Selected Moving Image'},
@@ -7,20 +6,28 @@ export const TITLES = [
  {title:'ARVIN DOLA &\nIRENE GAUMÉ',subtitle:'O Ghost'},
  {title:'IMMERSIVE BEATS',subtitle:'Parry Videotapes'}
 ];
-export const regionAt=(x,y)=>Math.min(2,Math.max(0,Math.floor(y*3)))*2+Math.min(1,Math.max(0,Math.floor(x*2)));
+export const GESTURE_HOLD_SECONDS=.7;
+export const GESTURE_RELEASE_SECONDS=.15;
+export const isReleasePose=pose=>['pointing','neutral','released','closed'].includes(pose);
+export const isNavigationPose=pose=>pose==='open';
 export class PerformanceState {
- constructor(){this.index=0;this.auto=true;this.gestureArmed=false;this.gestureAge=0;this.lastPose='unknown';this.reset();}
- reset(){this.elapsed=0;this.paintTime=0;this.activity=Array(6).fill(0);this.visible=false;this.region=2;this.stroke={x:.5,y:.5};this.hue=Math.random();}
- advance(direction=1){this.index=(this.index+direction+6)%6;this.reset();}
+ constructor(){this.index=0;this.resetGesture();this.reset();}
+ reset(){this.paintTime=0;this.stroke={x:.5,y:.5};}
+ resetGesture(){this.gestureAge=0;this.lastPose='unknown';this.gestureLocked=false;this.releaseAge=0;}
+ advance(direction=1){this.index=(this.index+direction+TITLES.length)%TITLES.length;this.reset();}
+ control(trace){return trace?{x:Math.max(0,Math.min(1,trace.x)),y:Math.max(0,Math.min(1,trace.y))}:null;}
  gesture(pose,dt){
-  if(pose!==this.lastPose){this.gestureAge=0;this.lastPose=pose;}else this.gestureAge+=dt;
-  if(pose==='open'&&this.gestureAge>=.35)this.gestureArmed=true;
-  if(pose==='closed'&&this.gestureAge>=.35&&this.gestureArmed){this.gestureArmed=false;this.advance();return true;}return false;
+  if(!isNavigationPose(pose)){
+   this.lastPose='unknown';this.gestureAge=0;this.releaseAge=isReleasePose(pose)?this.releaseAge+dt:0;
+   if(this.releaseAge>=GESTURE_RELEASE_SECONDS)this.gestureLocked=false;
+   return false;
+  }
+  this.releaseAge=0;
+  if(pose!==this.lastPose){this.lastPose=pose;this.gestureAge=0;}
+  this.gestureAge+=dt;
+  if(this.gestureLocked||this.gestureAge<GESTURE_HOLD_SECONDS)return false;
+  this.gestureLocked=true;this.advance(1);return true;
  }
- tick(dt,trace,wallDt=dt){
-  if(this.auto){this.elapsed+=wallDt;if(this.elapsed>=SLIDE_SECONDS){this.advance();return;}}
-  if(!trace)return;
-  this.visible=true;this.region=trace.region;this.stroke={x:trace.x,y:trace.y};this.paintTime+=dt;
-  this.activity=this.activity.map((a,i)=>Math.min(1,a+dt*(i===trace.region?.12:.009)));
- }
+ get gestureProgress(){return this.gestureLocked?0:Math.min(1,this.gestureAge/GESTURE_HOLD_SECONDS);}
+ tick(dt,trace){if(trace){this.stroke=this.control(trace);this.paintTime+=dt;}}
 }

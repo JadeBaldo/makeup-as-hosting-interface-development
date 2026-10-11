@@ -57,14 +57,14 @@ export function buildSurfaceStudy(textGeometry,{spacing=2.2}={}){
   for(let i=0;i<count;i++){const rest=vertices[i],normal=normals[i],m=mask[i],d=dose[i],growth=smooth(d/8),rupture=smooth((d-threshold(rest.x,rest.y))/.85);
    const lobe=.85+.15*Math.sin(rest.x*.43+rest.y*.37),swelling=m*(.12+growth*10*lobe)*extent;
    // Leave a permanent compressed/warped footprint after rupture, not a reset.
-   const lateral=swelling*(1-rupture*.62);
+   const lateral=swelling*(1-rupture*.35);
    positions[i].copy(rest);
    positions[i].x+=normal.x*lateral;
    positions[i].y+=normal.y*lateral-growth*m*(.7+rupture*1.2)*extent;
-   positions[i].z+=normal.z*(swelling*(1-rupture*.96)-rupture*m*1.8*extent);
+   positions[i].z+=normal.z*(swelling*(1-rupture*.55)-rupture*m*.6*extent);
    positions[i].x+=Math.sin(time*.9+rest.x*.12)*growth*m*.16*(1-rupture)*extent;
    colours[i].copy(textColour);
-   if(m>0){tint.copy(strokeColour).lerp(growthColour,smooth(d/2));tint.multiplyScalar(1-rupture*.3);colours[i].lerp(tint,smooth(m*2));}
+   if(m>0){tint.copy(strokeColour).lerp(growthColour,smooth(d/8));tint.multiplyScalar(1-rupture*.12);colours[i].lerp(tint,smooth(m*2));}
   }
   for(const geometry of parts){const attr=geometry.attributes.position,color=geometry.attributes.color;
    geometry.userData.masterIds.forEach((id,i)=>{positions[id].toArray(attr.array,i*3);colours[id].toArray(color.array,i*3);geometry.attributes.growthWeight.array[i]=extent>0?smooth(mask[id]*2):0;});
@@ -102,8 +102,10 @@ export function buildSurfaceStudy(textGeometry,{spacing=2.2}={}){
    previous={x:b.x,y:b.y};return true;
   },
   lift(){previous=null;},
-  step(dt,point){if(!(dt>0)||!point)return [];time+=dt;
-   for(let i=0;i<count;i++)if(mask[i]>0){const rest=vertices[i],near=Math.exp(-((rest.x-point.x)**2+(rest.y-point.y)**2)/65);dose[i]=Math.min(13,dose[i]+dt*(.28+1.8*near)*mask[i]);}
+  snapshot(){return {mask:mask.slice(),dose:dose.slice(),time,sites:sites.map(s=>({...s}))};},
+  restore(saved){mask.set(saved.mask);dose.set(saved.dose);time=saved.time;sites.length=0;sites.push(...saved.sites.map(s=>({...s})));previous=null;render();},
+  step(dt,point,{spread=65}={}){if(!(dt>0)||!point)return [];time+=dt;
+   for(let i=0;i<count;i++)if(mask[i]>0){const rest=vertices[i],near=Math.exp(-((rest.x-point.x)**2+(rest.y-point.y)**2)/spread);dose[i]=Math.min(13,dose[i]+dt*(.28+1.8*near)*mask[i]);}
    render();const detached=[];
    for(const s of sites)if(!s.popped&&dose[s.index]>=threshold(s.x,s.y)){s.popped=true;const at=positions[s.index];detached.push({x:at.x,y:at.y,z:at.z});}
    return detached;

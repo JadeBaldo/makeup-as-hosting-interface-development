@@ -1,3 +1,13 @@
+# Altered Images - Final Final Interaction
+
+Frozen on 11 October 2026 before the next graphics pass. Current integrated source: [altered-images-preview](altered-images-preview/). Decisions and rationale: [FINAL-FINAL-INTERACTION.md](altered-images-preview/FINAL-FINAL-INTERACTION.md).
+
+Verified archive: [Final Final Interaction ZIP](saved-versions/altered-images-final-final-interaction-2026-10-11.zip), with its SHA-256 checksum alongside it. The earlier 01.4 and 01.5 reference archives remain preserved. The 01.5 reference is for visual qualities only, not its input mapping.
+
+Run `python serve.py` inside `altered-images-preview/`, then open http://localhost:8001.
+
+The historical development notes below describe the older 01.4/01.5 transition, not the current interaction rules.
+
 # Makeup as hosting interface — graphics development
 
 Development snapshots for Altered Images. This repository documents the move

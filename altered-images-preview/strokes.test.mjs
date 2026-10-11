@@ -15,6 +15,7 @@ const frame=faceSpace([{x:100,y:100},{x:500,y:100},{x:500,y:700},{x:100,y:700}],
 ink.finish();ink.follow(frame,1000,800,true);
 assert.equal(root.position.x,-200);assert.equal(root.position.y,0);assert.equal(root.scale.x,400/640);
 assert.deepEqual(mesh.geometry.attributes.position.array,points); // following does not evolve the stroke
+assert.equal(ink.worldRadius(9),9*Math.sqrt((400/640)*(600/480)),'brush width follows the visible stroke scale');
 ink.follow(null,1000,800,true);assert.equal(root.visible,false);
 ink.add({x:.7,y:.6});assert.equal(ink.count,2);
 const originalColour=mesh.material.color.getHexString();
@@ -27,5 +28,11 @@ ink.finish();ink.colour(.08);ink.add({x:.6,y:.4});
 assert.equal(ink.count,4);
 assert.equal(mesh.material.color.getHexString(),originalColour);
 assert.notEqual(root.children[3].children[0].material.color.getHexString(),blueStroke.material.color.getHexString());
+const beforeOpacity=mesh.geometry.attributes.position.array.slice();
+ink.opacity(.35);assert.equal(mesh.material.opacity,.35);assert.equal(mesh.material.transparent,true);assert.equal(mesh.material.depthWrite,false);
+assert.deepEqual(mesh.geometry.attributes.position.array,beforeOpacity);assert.equal(mesh.material.color.getHexString(),originalColour);
+ink.finish();ink.add({x:.8,y:.8});assert.equal(root.children.at(-1).children[0].material.opacity,.35,'new strokes inherit opacity');
+ink.opacity(0);assert.equal(mesh.material.opacity,0);assert.equal(stroke.children[1].material.opacity,0,'echo fades with stroke');
+ink.opacity(1);assert.equal(mesh.material.transparent,false);assert.equal(mesh.material.depthWrite,true);
 ink.clear();assert.equal(ink.count,0);assert.equal(root.children.length,0);ink.dispose();assert.equal(scene.children.length,0);
 console.log('PASS: tapered 3D geometry, original lacquer, face following, frozen geometry, stroke breaks and clear');

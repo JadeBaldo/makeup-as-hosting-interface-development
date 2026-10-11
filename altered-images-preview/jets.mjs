@@ -1,5 +1,7 @@
 import * as THREE from './vendor/three/three.module.js';
-import {regionAt} from './state.mjs';
+// Legacy 01.4 jet grouping, retained only for its standalone geometry checks.
+// The integrated performance does not import this renderer or use face sections.
+const regionAt=(x,y)=>Math.min(2,Math.max(0,Math.floor(y*3)))*2+Math.min(1,Math.max(0,Math.floor(x*2)));
 const clamp=v=>Math.max(0,Math.min(1,v));
 const smooth=v=>{v=clamp(v);return v*v*(3-2*v);};
 const hash=i=>{const n=Math.sin(i*127.1+31.7)*43758.5453;return n-Math.floor(n);};

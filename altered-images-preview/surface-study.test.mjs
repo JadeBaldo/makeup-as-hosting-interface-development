@@ -63,5 +63,6 @@ for(const angle of [0,.5,-.5]){group.rotation.y=angle;group.updateMatrixWorld(tr
 const beforeRupture=Float32Array.from(p.array);let ruptures=[];for(let i=0;i<40;i++)ruptures.push(...s.step(.4,innerPoint));assert(ruptures.length>0);
 assert(p.array.some((v,i)=>v!==beforeRupture[i]));assert(p.array.some((v,i)=>v!==base[i]),'rupture leaves residual distortion');checkJoins();
 const frozenShell=Float32Array.from(s.shell.attributes.position.array),frozenFront=Float32Array.from(p.array);s.lift();s.step(1,null);assert.deepEqual(p.array,frozenFront);assert.deepEqual(s.shell.attributes.position.array,frozenShell);
+const savedField=s.snapshot();s.reset();s.restore(savedField);assert.deepEqual(p.array,frozenFront);assert.deepEqual(s.shell.attributes.position.array,frozenShell);
 s.reset();assert.deepEqual(p.array,base);assert.deepEqual(s.shell.attributes.position.array,shellBase);checkJoins();
 mat.dispose();s.dispose();geo.dispose();console.log('PASS: continuous trails, connected front/bevel/wall joins, outward silhouette, narrowing openings, retracing, rupture distortion, rotated raycast registration, freeze and reset.');

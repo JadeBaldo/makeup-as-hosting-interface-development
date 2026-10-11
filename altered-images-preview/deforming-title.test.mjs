@@ -39,10 +39,45 @@ const before=title.letters[0].study.surface.attributes.position.array.slice();ti
 const shader={uniforms:{},vertexShader:'#include <common>\n#include <begin_vertex>',fragmentShader:'#include <common>\n#include <color_fragment>'};surface.material.onBeforeCompile(shader);surface.update({opacity:.2});
 assert.equal(surface.material.opacity,1);assert.equal(shader.uniforms.growthOpacity.value,.2);
 assert(shader.fragmentShader.includes('mix(1.0, growthOpacity, vGrowthWeight)'));
-for(let i=0;i<30;i++){const a=letterRotation(100,i);assert(Math.abs(a.y)<=.14);assert(Object.values(a).every(Number.isFinite));}
+for(let i=0;i<30;i++){const a=letterRotation(100,i);assert.equal(a.x,0);assert.equal(a.z,0);assert(Object.values(a).every(Number.isFinite));}
 // Exercise all actual programme glyphs, subtitles, accents and disposal.
 for(const cue of TITLES){const size=title.build([...cue.title.split('\n').map(text=>({text,size:52})),...(cue.subtitle?[{text:cue.subtitle,size:20}]:[])],font);
  assert(size.x>0&&size.y>0);assert(title.letters.length>0);for(const glyph of title.letters)assert([...glyph.study.surface.attributes.position.array].every(Number.isFinite));
 }
+// Face strokes address material coordinates, even with the title elsewhere.
+title.build([{text:'B',size:52}],font);
+const mappedLetter=title.letters[0],bounds=mappedLetter.bounds,size=bounds.getSize(new THREE.Vector3());
+const facePoint={x:(mappedLetter.study.center.x-bounds.min.x)/size.x,y:(bounds.max.y-mappedLetter.study.center.y)/size.y};
+const originalTrace=mappedLetter.study.trace,samples=[];
+mappedLetter.study.trace=(point,width)=>{samples.push({point:point.clone(),width});return true;};
+root.position.set(900,-500,0);root.scale.setScalar(2);
+title.animate(0);root.updateMatrixWorld(true);assert(title.traceStroke(facePoint,9,.016));title.lift();
+title.animate(20);root.updateMatrixWorld(true);assert(title.traceStroke(facePoint,9,.016));title.lift();
+assert(samples[0].point.distanceTo(samples.at(-1).point)<1e-6,'face mapping ignores screen placement and letter rotation');
+assert(Math.abs(samples[0].width-Math.max(2.2,Math.min(12,13.5*Math.sqrt((size.x/640)*(size.y/480)))))<1e-6,'face strokes have a bounded local influence');
+mappedLetter.study.trace=originalTrace;
+
+// Exercise reset controls with real geometry and accumulated stroke meshes.
+const {PerformanceState}=await import('./state.mjs');
+const {createInteraction}=await import('./interaction.mjs');
+const navigationState=new PerformanceState();
+const actions=createInteraction(navigationState,{
+ resetTitle(){ink.finish();title.lift();title.build([{text:'B',size:52}],font);},
+ clearStrokes(){ink.clear();},finishDrawing(){ink.finish();title.lift();},
+});
+const fresh=title.letters[0].study.surface.attributes.position.array.slice();
+const retainedColours=scene.children[1].children.map(stroke=>stroke.children[0].material.color.getHexString());
+title.traceStroke(facePoint,9,120);
+const changed=title.letters[0].study.surface.attributes.position.array.slice();
+assert(changed.some((v,i)=>Math.abs(v-fresh[i])>.001));
+actions.advance();assert.deepEqual(title.letters[0].study.surface.attributes.position.array,fresh);
+assert.deepEqual(scene.children[1].children.map(stroke=>stroke.children[0].material.color.getHexString()),retainedColours,'navigation preserves strokes and colours');
+title.traceStroke(facePoint,9,120);const beforeClear=title.letters[0].study.surface.attributes.position.array.slice();
+actions.clear();assert.equal(ink.count,0);assert.deepEqual(title.letters[0].study.surface.attributes.position.array,beforeClear);
+ink.colour(.34);ink.add({x:.3,y:.2});actions.reset();assert.equal(ink.count,0);assert.equal(navigationState.index,1);
+assert.deepEqual(title.letters[0].study.surface.attributes.position.array,fresh);assert.equal(title.detachedCount,0);
+title.animate(123);const phaseBeforeSlide=title.letters[0].pivot.rotation.y;
+title.build([{text:'A',size:52}],font);title.animate(124);
+assert(Math.abs(title.letters[0].pivot.rotation.y-phaseBeforeSlide-Math.PI*2/360)<1e-9,'new slide continues the shared rotation clock');
 title.dispose();ink.dispose();surface.dispose();assert.equal(root.children.length,0);
 console.log('PASS: independent continuous glyph turning, moving-surface picking, frozen swelling, slide/stroke isolation, local opacity, all programme glyphs and disposal.');

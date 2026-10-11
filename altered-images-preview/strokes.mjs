@@ -1,7 +1,7 @@
 import * as THREE from './vendor/three/three.module.js';
-import {GRAPHICS_CONFIG} from './graphics-config.mjs';
+import {GRAPHICS_CONFIG} from './graphics-config.mjs?v=section-timer-07';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-export function createTaperedTubeGeometry(points,radius){const config=GRAPHICS_CONFIG.renderer,curve=new THREE.CatmullRomCurve3(points,false,'centripetal',.35),segments=Math.min(config.maxTrailPoints*config.tubeCurveSegmentsPerPoint,Math.max(24,points.length*config.tubeCurveSegmentsPerPoint)),radial=config.tubeRadialSegments,frames=curve.computeFrenetFrames(segments,false),positions=[],indices=[];for(let i=0;i<=segments;i++){const t=i/segments,center=curve.getPointAt(t),edge=Math.min(t,1-t)/config.taperFraction,s=clamp(edge,0,1),taper=s*s*(3-2*s);for(let j=0;j<=radial;j++){const angle=j/radial*Math.PI*2,normal=frames.normals[i],binormal=frames.binormals[i],ringRadius=radius*Math.max(.015,taper),x=center.x+ringRadius*(Math.cos(angle)*normal.x+Math.sin(angle)*binormal.x),y=center.y+ringRadius*(Math.cos(angle)*normal.y+Math.sin(angle)*binormal.y),z=center.z+ringRadius*(Math.cos(angle)*normal.z+Math.sin(angle)*binormal.z);positions.push(x,y,z);if(i<segments&&j<radial){const a=i*(radial+1)+j,b=a+radial+1;indices.push(a,b,a+1,b,b+1,a+1);}}}const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setIndex(indices);geometry.computeVertexNormals();return geometry;}
+export function createTaperedTubeGeometry(points,radius){const config=GRAPHICS_CONFIG.renderer,curve=new THREE.CurvePath(),segments=Math.min(config.maxTrailPoints*config.tubeCurveSegmentsPerPoint,Math.max(24,points.length*config.tubeCurveSegmentsPerPoint)),radial=config.tubeRadialSegments,positions=[],indices=[];for(let i=1;i<points.length;i++)curve.add(new THREE.LineCurve3(points[i-1],points[i]));const frames=curve.computeFrenetFrames(segments,false);for(let i=0;i<=segments;i++){const t=i/segments,center=curve.getPointAt(t),edge=Math.min(t,1-t)/config.taperFraction,s=clamp(edge,0,1),taper=s*s*(3-2*s);for(let j=0;j<=radial;j++){const angle=j/radial*Math.PI*2,normal=frames.normals[i],binormal=frames.binormals[i],ringRadius=radius*Math.max(.015,taper),x=center.x+ringRadius*(Math.cos(angle)*normal.x+Math.sin(angle)*binormal.x),y=center.y+ringRadius*(Math.cos(angle)*normal.y+Math.sin(angle)*binormal.y),z=center.z+ringRadius*(Math.cos(angle)*normal.z+Math.sin(angle)*binormal.z);positions.push(x,y,z);if(i<segments&&j<radial){const a=i*(radial+1)+j,b=a+radial+1;indices.push(a,b,a+1,b,b+1,a+1);}}}const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setIndex(indices);geometry.computeVertexNormals();return geometry;}
 
 // The tube builder and lacquer parameters come from the uploaded prototype.
 export function createStrokeRenderer(scene){
@@ -29,6 +29,14 @@ export function createStrokeRenderer(scene){
   finish(){active=null;},
   clear(){for(const s of strokes)disposeStroke(s);strokes.length=0;active=null;},
   colour(hue){if(hue!==currentHue)active=null;currentHue=hue;},
+  opacity(value){
+   const alpha=clamp(Number(value),0,1);
+   for(const m of [material,...strokes.map(s=>s.material)]){
+    const transparent=alpha<1;if(m.transparent!==transparent)m.needsUpdate=true;
+    m.opacity=alpha;m.transparent=transparent;m.depthWrite=!transparent;
+   }
+   echoMaterial.opacity=GRAPHICS_CONFIG.echo.face.opacity*alpha;
+  },
   follow(frame,width,height,webcam){
    root.visible=!webcam||!!frame;if(!root.visible)return;
    const center=webcam?frame.screen({x:.5,y:.5}):{x:width/2,y:height/2};
@@ -37,6 +45,7 @@ export function createStrokeRenderer(scene){
    root.position.set(center.x-width/2,height/2-center.y,60);root.rotation.z=webcam?-frame.angle:0;root.scale.set(sx,sy,Math.sqrt(sx*sy));
   },
   get count(){return strokes.length;},
+  worldRadius(radius){return radius*Math.sqrt(Math.abs(root.scale.x*root.scale.y));},
   dispose(){this.clear();material.dispose();echoMaterial.dispose();scene.remove(root);}
  };
 }

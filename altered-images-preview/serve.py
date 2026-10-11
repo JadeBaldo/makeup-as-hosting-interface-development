@@ -7,11 +7,12 @@ import webbrowser
 root = Path(__file__).resolve().parent
 handler = partial(SimpleHTTPRequestHandler, directory=str(root))
 try:
-    server = ThreadingHTTPServer(('127.0.0.1', 8765), handler)
+    server = ThreadingHTTPServer(('127.0.0.1', 8001), handler)
 except OSError:
-    raise SystemExit('Port 8765 is busy. Close the previous preview server and try again.')
-print('Altered Images: http://localhost:8765 — press Ctrl+C to stop')
-webbrowser.open('http://localhost:8765')
+    webbrowser.open('http://localhost:8001/?v=face-controller-03')
+    raise SystemExit('Port 8001 is already in use. Opened the running integrated preview.')
+print('Altered Images: http://localhost:8001 — press Ctrl+C to stop')
+webbrowser.open('http://localhost:8001/?v=face-controller-03')
 try:
     server.serve_forever()
 except KeyboardInterrupt:
