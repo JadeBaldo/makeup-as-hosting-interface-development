@@ -1,0 +1,2 @@
+# Preserve checkpoint file bytes, including source line endings, for SHA-256 verification.
+graphics-study-03/** -text

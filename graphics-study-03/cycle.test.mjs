@@ -1,0 +1,34 @@
+import './study.test.mjs';
+import assert from 'node:assert/strict';
+import {performanceCycle,BURST_AT} from './performance-cycle.mjs';
+import {lifecycle} from './trace-field.mjs';
+import {readFileSync} from 'node:fs';
+const {FontLoader}=await import('./vendor/three/examples/jsm/loaders/FontLoader.js');
+const {TextGeometry}=await import('./vendor/three/examples/jsm/geometries/TextGeometry.js');
+const {createLetterStudy}=await import('./deformation.mjs');
+assert.equal(performanceCycle(0).pressure,0);
+assert(performanceCycle(180).pressure>.4);
+assert(lifecycle(180,BURST_AT).growth<1,'buildup continues through six minutes');assert(lifecycle(2.2,BURST_AT).growth>.6,'first stroke gets substantial response');assert(lifecycle(270,BURST_AT).growth>lifecycle(20,BURST_AT).growth);assert.equal(lifecycle(270,BURST_AT).rupture,0);
+assert.equal(performanceCycle(359.99).empty,0);assert(lifecycle(359,360).growth<lifecycle(360,360).growth);assert.equal(lifecycle(359.999,360).rupture,0);assert.equal(lifecycle(360,360).growth,1);
+assert.equal(performanceCycle(360).stage,'bursting');
+assert.equal(performanceCycle(364).stage,'falling');
+assert.equal(performanceCycle(372).stage,'carcass');
+assert.equal(performanceCycle(372).empty,1);
+assert.equal(performanceCycle(372).drop,1);
+assert.deepEqual(performanceCycle(372),performanceCycle(600));
+const font=new FontLoader().parse(JSON.parse(readFileSync(new URL('./vendor/three/examples/fonts/gentilis_bold.typeface.json',import.meta.url))));
+const geometry=new TextGeometry('R',{font,size:100,depth:12,curveSegments:10,bevelEnabled:true,bevelThickness:1.8,bevelSize:1.25,bevelSegments:4});geometry.center();
+const s=createLetterStudy(geometry);geometry.dispose();s.setPerformanceMode(true);
+const p=s.rest.find(p=>s.field.contains(p));assert(s.trace(p,0));s.lift();s.update(2.2);assert(s.skins.get(0).foldStrength.value>.7,'wet relief before rupture');assert(s.front.attributes.position.array.some((v,i)=>i%3===2&&v>s.frontZ+.5),'early body swelling');s.update(240);
+assert.equal(s.field.marks[0].threshold,360);assert.equal(s.field.state(s.field.marks[0],240).rupture,0);
+const span=()=>{const a=s.front.attributes.position;let lo=Infinity,hi=-Infinity;for(let i=0;i<a.count;i++){lo=Math.min(lo,a.getY(i));hi=Math.max(hi,a.getY(i));}return hi-lo;};
+const inflated=span();assert.equal(s.update(360.1).events.length,1);assert.equal(s.update(360.2).events.length,0);s.update(372);assert(span()<inflated*.45,'empty carcass loses height');assert(s.core.every(m=>!m.visible));assert(!s.trace(p,372));
+const THREE=await import('three');
+// Check the counter with a ray before and after the folded height loss.
+const bounds=s.front.boundingBox;let hole;
+for(let y=bounds.min.y+(bounds.max.y-bounds.min.y)*.68;y<bounds.max.y-12&&!hole;y++)for(let x=bounds.min.x+15;x<bounds.max.x-12;x++)if(!s.field.contains({x,y})&&!s.field.contains({x,y:y-5})&&!s.field.contains({x,y:y+5})&&s.field.contains({x:x-12,y})&&s.field.contains({x:x+12,y})){hole={x,y};break;}
+assert(hole,'reference counter exists');
+s.update(240,{scrub:true});let ray=new THREE.Raycaster(new THREE.Vector3(hole.x,hole.y,200),new THREE.Vector3(0,0,-1));assert.equal(s.pick(ray),null,'counter remains open during buildup');
+s.update(372,{scrub:true});const fold=Math.sin(hole.x*.21+hole.y*.13+Math.sin(hole.y*.09)*2);ray=new THREE.Raycaster(new THREE.Vector3(hole.x,hole.y*.32+fold*2.4,200),new THREE.Vector3(0,0,-1));assert.equal(s.pick(ray),null,'counter remains open in aftermath');
+s.reset();assert.equal(s.field.nextId,0);assert(s.core.every(m=>m.visible));assert(span()>inflated*.8);s.dispose();
+console.log('PASS six-minute progression, slow inflation, burst, collapse and weighted landing');

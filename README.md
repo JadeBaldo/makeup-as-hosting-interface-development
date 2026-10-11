@@ -1,3 +1,9 @@
+# Altered Images — Study 03 graphics checkpoint
+
+The **Inexhaustible Slime** graphics checkpoint is in [graphics-study-03](graphics-study-03/). Start with [CHECKPOINT.md](graphics-study-03/CHECKPOINT.md) for the concept, preserved assets, verification and recovery instructions. The current Blender scene combines liquid-metal covering, boiling openings, an inexhaustible slime interior, continuous drainage and restrained vapour. It remains a separate experiment; the integrated performance below is unchanged.
+
+Dedicated checkpoint branch: `study03-inexhaustible-slime-checkpoint-2026-10-11`. The integrated freeze remains available on `final-final-interaction-2026-10-11`.
+
 # Altered Images - Final Final Interaction
 
 Frozen on 11 October 2026 before the next graphics pass. Current integrated source: [altered-images-preview](altered-images-preview/). Decisions and rationale: [FINAL-FINAL-INTERACTION.md](altered-images-preview/FINAL-FINAL-INTERACTION.md).

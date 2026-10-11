@@ -1,0 +1,16 @@
+{
+  "rendered_excerpt_seconds": 18,
+  "playback_seconds": 60,
+  "performance_buildup_seconds": 360,
+  "bubbling_start_seconds": 8,
+  "rupture_seconds": 10.5,
+  "inexhaustible_slime": true,
+  "metal_dissolution": "Partial, preserving a covering around the interior source",
+  "limitations": [
+    "Procedural emission continues beyond keyed inspection frames; timeline restart repeats the buildup",
+    "Shader dissolution with keyed geometry, not a liquid/chemical simulation",
+    "Vapour is two small animated procedural volumes",
+    "Mass is deliberately not conserved",
+    "No browser integration or performance-timing change"
+  ]
+}

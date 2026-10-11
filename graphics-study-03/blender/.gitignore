@@ -1,0 +1,4 @@
+.runtime/
+__pycache__/
+install.log
+output/*.blend1

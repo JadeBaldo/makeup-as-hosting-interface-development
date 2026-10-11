@@ -1,0 +1,19 @@
+{
+  "duration": 18,
+  "frames": 216,
+  "previewFPS": 12,
+  "checks": [
+    "H264 video loads",
+    "play advances",
+    "pause freezes",
+    "seek stages",
+    "loop enabled",
+    "restart"
+  ],
+  "errors": [],
+  "notVerified": [
+    "Live fluid simulation",
+    "Browser integration of the 3D effect",
+    "Jade visual approval"
+  ]
+}

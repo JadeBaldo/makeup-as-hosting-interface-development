@@ -1,0 +1,58 @@
+{
+  "fps": 24,
+  "frames": 432,
+  "preview_seconds": 18,
+  "performance_buildup_seconds": 360,
+  "rupture_preview_seconds": 10.5,
+  "checkpoints": [
+    {
+      "frame": 1,
+      "seconds": 0.0,
+      "collapse": 0,
+      "fall": 0,
+      "core_visible": true
+    },
+    {
+      "frame": 145,
+      "seconds": 6.0,
+      "collapse": 0,
+      "fall": 0,
+      "core_visible": true
+    },
+    {
+      "frame": 253,
+      "seconds": 10.5,
+      "collapse": 0,
+      "fall": 0,
+      "core_visible": true
+    },
+    {
+      "frame": 265,
+      "seconds": 11.0,
+      "collapse": 0.4643127092106683,
+      "fall": 0,
+      "core_visible": true
+    },
+    {
+      "frame": 307,
+      "seconds": 12.75,
+      "collapse": 1,
+      "fall": 1,
+      "core_visible": false
+    },
+    {
+      "frame": 432,
+      "seconds": 17.958333333333332,
+      "collapse": 1,
+      "fall": 1,
+      "core_visible": false
+    }
+  ],
+  "mesh_vertices_per_layer": 46424,
+  "limitations": [
+    "Accelerated proposal, not a six-minute simulation",
+    "Slit and lips are an art-directed rupture cue, not a topology cut",
+    "No fluid solver; thread and two droplets are bounded keyed geometry",
+    "Morph weights and shape offsets can transfer; Cycles lighting cannot transfer directly"
+  ]
+}

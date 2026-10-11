@@ -1,0 +1,23 @@
+{
+  "blender": "5.2.2 LTS",
+  "vertices": 46424,
+  "polygons": 46424,
+  "nonmanifold_edges": 0,
+  "shape_keys": [
+    "Basis",
+    "Stretched",
+    "Collapsed"
+  ],
+  "outputs": [
+    "altered-r.blend",
+    "altered-r-shapes.glb",
+    "filled.png",
+    "stretched.png",
+    "collapsed.png"
+  ],
+  "limitations": [
+    "Art-directed shapes, not a fluid simulation",
+    "Blender lighting/procedural appearance does not automatically transfer to the browser",
+    "GLB not integrated into Study 03 yet"
+  ]
+}

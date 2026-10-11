@@ -1,0 +1,12 @@
+{
+  "inspection_seconds": 18,
+  "performance_buildup_seconds": 360,
+  "bubbling_start_seconds": 8,
+  "rupture_seconds": 10.5,
+  "dissolves_by_seconds": 17.5,
+  "limitations": [
+    "Shader dissolution with keyed geometry, not a liquid/evaporation simulation",
+    "Glyph disappears at the end deliberately; its counter stays open during earlier buildup",
+    "No browser integration or performance-timing change"
+  ]
+}

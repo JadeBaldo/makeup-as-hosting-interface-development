@@ -1,0 +1,51 @@
+[
+  {
+    "seconds": 0,
+    "height": 0.9532242119312286,
+    "collapse": 0.0,
+    "counter_centre_open": true,
+    "core_visible": true
+  },
+  {
+    "seconds": 4,
+    "height": 0.9795595407485962,
+    "collapse": 0.0,
+    "counter_centre_open": true,
+    "core_visible": true
+  },
+  {
+    "seconds": 9,
+    "height": 0.981443852186203,
+    "collapse": 0.0,
+    "counter_centre_open": true,
+    "core_visible": true
+  },
+  {
+    "seconds": 10.75,
+    "height": 0.9117611944675446,
+    "collapse": 0.14307309687137604,
+    "counter_centre_open": true,
+    "core_visible": true
+  },
+  {
+    "seconds": 11.4,
+    "height": 0.5194664001464844,
+    "collapse": 0.9557203054428101,
+    "counter_centre_open": true,
+    "core_visible": false
+  },
+  {
+    "seconds": 12.7,
+    "height": 0.5008642822504044,
+    "collapse": 1.0,
+    "counter_centre_open": true,
+    "core_visible": false
+  },
+  {
+    "seconds": 17,
+    "height": 0.49985021352767944,
+    "collapse": 1.0,
+    "counter_centre_open": true,
+    "core_visible": false
+  }
+]

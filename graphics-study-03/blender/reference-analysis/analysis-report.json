@@ -1,0 +1,26 @@
+[
+  {
+    "name": "jelly",
+    "source": "C:\\Users\\jbald\\Desktop\\Grabaci\u00f3n 2026-10-11 204932.mp4",
+    "duration_seconds": 4.2,
+    "sample_fps": 12,
+    "samples": 50,
+    "warning": "Screen-space metrics include camera motion, highlights, cropping and editing. They do not recover forces, viscosity or 3D geometry."
+  },
+  {
+    "name": "softness",
+    "source": "C:\\Users\\jbald\\Videos\\Grabaciones de pantalla\\Grabaci\u00f3n de pantalla 2026-10-11 180540.mp4",
+    "duration_seconds": 10.133333333333333,
+    "sample_fps": 12,
+    "samples": 121,
+    "warning": "Screen-space metrics include camera motion, highlights, cropping and editing. They do not recover forces, viscosity or 3D geometry."
+  },
+  {
+    "name": "bubbles",
+    "source": "C:\\Users\\jbald\\Desktop\\Grabaci\u00f3n bubbles ejemplo.mp4",
+    "duration_seconds": 19.7,
+    "sample_fps": 12,
+    "samples": 236,
+    "warning": "Screen-space metrics include camera motion, highlights, cropping and editing. They do not recover forces, viscosity or 3D geometry."
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "seconds": 0,
+    "skin_threshold": -0.019999999552965164,
+    "slime_threshold": -0.019999999552965164,
+    "counter_centre_open": true
+  },
+  {
+    "seconds": 9,
+    "skin_threshold": -0.019999999552965164,
+    "slime_threshold": -0.019999999552965164,
+    "counter_centre_open": true
+  },
+  {
+    "seconds": 10.8,
+    "skin_threshold": -0.016860531643033028,
+    "slime_threshold": -0.019999999552965164,
+    "counter_centre_open": true
+  },
+  {
+    "seconds": 12,
+    "skin_threshold": 0.053206998854875565,
+    "slime_threshold": -0.019999999552965164,
+    "counter_centre_open": true
+  },
+  {
+    "seconds": 14,
+    "skin_threshold": 0.28999999165534973,
+    "slime_threshold": -0.019999999552965164,
+    "counter_centre_open": true
+  },
+  {
+    "seconds": 17.9,
+    "skin_threshold": 0.6000000238418579,
+    "slime_threshold": -0.019999999552965164,
+    "counter_centre_open": true
+  }
+]

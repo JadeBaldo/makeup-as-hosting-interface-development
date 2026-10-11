@@ -1,0 +1,42 @@
+{
+  "accumulation": {
+    "traces": 503,
+    "surfaces": 1,
+    "sameMesh": true,
+    "sameTriangles": true,
+    "fields": 1
+  },
+  "carcass": {
+    "stage": "carcass",
+    "fall": 1,
+    "empty": 1,
+    "residues": 3,
+    "coreVisible": false,
+    "finite": true,
+    "scale": 1.9656079801086512,
+    "y": -46.70618953467594
+  },
+  "activeFPS": 28.200902764833405,
+  "settledFPS": 59.63040880454662,
+  "errors": [],
+  "checks": [
+    "real pointer drawing and directional field",
+    "500 traces with constant shared mesh",
+    "scrubbed six-minute stages",
+    "frame-fitting elastic stretch",
+    "finite collapsed geometry",
+    "weighted landing at bottom",
+    "liquid core disappears",
+    "brief natural rupture release stops",
+    "reset restores geometry and transforms",
+    "replay",
+    "360-second buildup then 12-second aftermath",
+    "mobile ending"
+  ],
+  "notVerified": [
+    "full six-minute wall-clock run",
+    "Jade?s physical/material judgment",
+    "multiple letters squishing together",
+    "performance machine GPU"
+  ]
+}
