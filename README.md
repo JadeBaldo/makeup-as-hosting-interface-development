@@ -1,4 +1,4 @@
-# Current pre-performance checkpoint ? 15 October 2026
+# Current pre-performance checkpoint - 15 October 2026
 
 The latest browser performance is frozen in [performance-2026-10-15](performance-2026-10-15/README.md), with standard and smoother-preview versions, capture-to-next-slide interaction, adjustable growth duration, and full readable subtitles constrained to two lines.
 

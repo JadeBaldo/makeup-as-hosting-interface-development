@@ -1,4 +1,4 @@
-# Pre-performance checkpoint ? 15 October 2026
+# Pre-performance checkpoint - 15 October 2026
 
 This freezes the final interaction and subtitle changes **before performance tuning and the live rehearsal pass**. It does not certify show-machine performance.
 
@@ -26,9 +26,9 @@ Open a broadside hand for about 0.22 seconds, then close it into a fist within t
 
 Each download contains six files: rendered PNG, deformed world-space OBJ, base-material MTL, AR video, webcam-only video, and JSON metadata. AR images/video include the readable bottom text; webcam-only video excludes it. OBJ/MTL do not reproduce shader masks, reflections or face cutouts. Audio is not recorded. Allow downloads; Save last capture again retries the latest ZIP in memory. Reloading discards unsaved video and the in-memory retry copy.
 
-The Growth duration control accepts 0?6 minutes in 0.1-minute steps, default 6. Zero makes global growth immediate once activated. Growth starts on an accepted letter mark or timeline inspection. Changing duration preserves relative buildup position; the local 24-second reaction cycle is unchanged. The global buildup is followed by a 12-second hold and a 60-second return; the next slide is built at the start of that return. Manual capture/navigation starts a fresh slide instead.
+The Growth duration control accepts 0-6 minutes in 0.1-minute steps, default 6. Zero makes global growth immediate once activated. Growth starts on an accepted letter mark or timeline inspection. Changing duration preserves relative buildup position; the local 24-second reaction cycle is unchanged. The global buildup is followed by a 12-second hold and a 60-second return; the next slide is built at the start of that return. Manual capture/navigation starts a fresh slide instead.
 
-The bottom white italic text contains **all title text plus its subtitle**, independent of 3D deformation. Subtitle size is 6?36 CSS pixels, default 22; automatic fitting can reduce it further to keep all text within at most two lines. Screen and AR capture share the fitting helper. H hides controls while keeping subtitles; F toggles fullscreen; arrows navigate; R resets; C clears drawing strokes. Slide changes clear marks and rebuild material fields.
+The bottom white italic text contains **all title text plus its subtitle**, independent of 3D deformation. Subtitle size is 6-36 CSS pixels, default 22; automatic fitting can reduce it further to keep all text within at most two lines. Screen and AR capture share the fitting helper. H hides controls while keeping subtitles; F toggles fullscreen; arrows navigate; R resets; C clears drawing strokes. Slide changes clear marks and rebuild material fields.
 
 Save text updates the current title/subtitle; Add slide appends one. Programme edits persist in this browser's localStorage for the exact origin. Different hostnames, ports, devices or browsers do not share them. The committed defaults are not a backup of browser-edited programme data; keep an exported capture JSON containing the intended programme.
 

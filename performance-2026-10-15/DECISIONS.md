@@ -1,4 +1,4 @@
-# Final decisions ? 15 October 2026
+# Final decisions - 15 October 2026
 
 These decisions summarize the user's accepted requests. Rationale below explains implementation intent; it is not a verbatim quotation.
 
@@ -11,7 +11,7 @@ These decisions summarize the user's accepted requests. Rationale below explains
 | Export both rendered and geometric forms plus webcam-only video. | PNG/AR video retain appearance; OBJ preserves current geometry for later use; camera-only output retains the performer independently. |
 | Expose global growth from 0 to 6 minutes. | Performance length is adjustable instead of fixed at six minutes; zero is immediate global buildup, not an off switch. Hold/return durations and the local 24-second cycle remain distinct. |
 | Duplicate all 3D language as bottom white italic text. | Readability must survive deformation. Include both the entire title and subtitle, including titles with explicit line breaks. |
-| Make readable text smaller by default with its own 6?36 size control. | Small-screen/projector composition needs a narrower scale than the 3D title control. Fit to one or two lines without dropping text; automatic fitting may go below the selected size. |
+| Make readable text smaller by default with its own 6-36 size control. | Small-screen/projector composition needs a narrower scale than the 3D title control. Fit to one or two lines without dropping text; automatic fitting may go below the selected size. |
 | Include bottom text in PNG/AR video, exclude it from webcam-only video. | The exported performance retains legible programme language while the clean camera recording stays independent. |
 | Retain editable programme and calibrated brush proxy. | Make rehearsal changes practical without changing code. Storage is browser/origin-specific; brush input estimates grip rather than detecting an object or painted makeup. |
 | Freeze the standard version and keep smoothing as a separate preview. | Protect a recoverable baseline while testing reduced repeated work. No frame-rate claim or automatic quality reduction is introduced. |

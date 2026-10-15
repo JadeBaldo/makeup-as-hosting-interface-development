@@ -11,4 +11,3 @@ except Exception:
   except Exception:time.sleep(.1)
  else:raise SystemExit('Could not start the study server on port 8772. Check whether another project uses that port.')
 webbrowser.open(url)
-
