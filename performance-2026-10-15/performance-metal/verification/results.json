@@ -1,0 +1,58 @@
+{
+  "slides": [
+    {
+      "slide": 0,
+      "glyphs": 20,
+      "verified": 20
+    },
+    {
+      "slide": 1,
+      "glyphs": 27,
+      "verified": 27
+    },
+    {
+      "slide": 2,
+      "glyphs": 10,
+      "verified": 10
+    },
+    {
+      "slide": 3,
+      "glyphs": 11,
+      "verified": 11
+    },
+    {
+      "slide": 4,
+      "glyphs": 26,
+      "verified": 26
+    },
+    {
+      "slide": 5,
+      "glyphs": 29,
+      "verified": 29
+    }
+  ],
+  "preserved_files": [
+    "state.mjs",
+    "interaction.mjs",
+    "face-space.mjs",
+    "face-motion.mjs",
+    "hand-pose.mjs",
+    "strokes.mjs",
+    "graphics-config.mjs",
+    "letter-motion.mjs"
+  ],
+  "errors": [],
+  "checks": [
+    "all six slides and every glyph swells, opens, replats and reseals",
+    "actual rehearsal input",
+    "accumulated strokes survive navigation",
+    "slide resets all local fields",
+    "clear strokes",
+    "terminal sea and reset",
+    "mobile layout"
+  ],
+  "notVerified": [
+    "live webcam rehearsal",
+    "full six-minute wall-clock run"
+  ]
+}

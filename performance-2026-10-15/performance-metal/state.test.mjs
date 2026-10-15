@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {PerformanceState} from './state.mjs';
+const s=new PerformanceState(),hold=(pose,n=10)=>Array.from({length:n},()=>s.gesture(pose,.1)).filter(Boolean).length;
+assert.equal(hold('closed'),0);assert.equal(hold('pointing'),0);assert.equal(s.index,0);
+for(let i=0;i<6;i++)assert.equal(s.gesture('open',.1),false);
+assert(s.gestureProgress>.8);assert.equal(s.gesture('open',.11),true);assert.equal(s.index,1);
+assert.equal(hold('open',100),0);hold('unknown',10);assert.equal(hold('open'),0);
+hold('released',2);assert.equal(hold('open'),1);assert.equal(s.index,2);
+hold('closed',2);assert.equal(hold('open'),1);assert.equal(s.index,3);
+s.advance(-1);assert.equal(s.index,2);s.tick(10000,null);assert.equal(s.index,2);
+for(const point of [{x:.49,y:.32},{x:.51,y:.34}])assert.deepEqual(s.control(point),point);
+s.reset();assert.equal(s.index,2);
+console.log('PASS: 0.7-second palm hold, progress, debounce, clear release, no fist navigation, manual direction and continuous map');

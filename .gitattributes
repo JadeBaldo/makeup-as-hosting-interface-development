@@ -1,2 +1,5 @@
 # Preserve checkpoint file bytes, including source line endings, for SHA-256 verification.
 graphics-study-03/** -text
+
+# Preserve final performance snapshot checksums across platforms.
+performance-2026-10-15/** -text

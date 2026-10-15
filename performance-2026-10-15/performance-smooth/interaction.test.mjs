@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {PerformanceState} from './state.mjs';
+import {createInteraction} from './interaction.mjs';
+const state=new PerformanceState();let strokes=[{colour:'red'}],deformation=5,fragments=3,resets=0;
+const interaction=createInteraction(state,{resetTitle(){deformation=0;fragments=0;resets++;},clearStrokes(){strokes=[];},finishDrawing(){}});
+const mark={x:.4,y:.5};
+for(let i=0;i<20;i++)assert.equal(interaction.frame('open',mark,.1,{navigationAllowed:false}).trace,null);
+assert.equal(state.index,0);assert.equal(resets,0);assert.equal(strokes.length,1);
+for(let i=0;i<10;i++)assert.equal(interaction.frame('open',mark,.1,{navigationAllowed:true}).trace,null);
+assert.equal(state.index,1);assert.equal(resets,1);assert.equal(state.paintTime,0);assert.deepEqual(strokes,[]);assert.equal(deformation,0);assert.equal(fragments,0);
+for(let i=0;i<20;i++)interaction.frame('open',mark,.1,{navigationAllowed:true});assert.equal(state.index,1);
+for(let i=0;i<10;i++)assert.equal(interaction.frame('closed',mark,.1).trace,null);assert.equal(state.index,1);
+for(const point of [{x:.49,y:.32},{x:.51,y:.34}])assert.deepEqual(interaction.frame('pointing',point,.1).mapped,point);
+assert.equal(interaction.frame('unknown',mark,.1).trace,null);
+deformation=8;fragments=2;interaction.clear();assert.equal(deformation,8);assert.equal(fragments,2);
+strokes=[{colour:'blue'}];interaction.advance(-1);assert.equal(state.index,0);assert.deepEqual(strokes,[]);assert.equal(deformation,0);
+strokes=[{colour:'green'}];interaction.select(2);assert.deepEqual(strokes,[]);deformation=7;interaction.reset();assert.equal(state.index,2);assert.equal(deformation,0);assert.equal(strokes.length,0);
+console.log('PASS: palm-away gating, navigation/drawing separation, manual controls, clean slide resets and clear-only');

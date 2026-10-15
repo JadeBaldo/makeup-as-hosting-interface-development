@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Altered Images — camera test</title>
+</head>
+<body>
+  <button id="start">Start camera</button>
+  <
+  <script>
+    const button = document.querySelector("#start");
+    const video = document.querySelector("#camera");
+    const canvas = document.querySelector("#output");
+     const context = canvas.getContext("2d");
+
+function renderFrame() {
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  requestAnimationFrame(renderFrame);
+}
+    button.onclick = async () = {
+        
+      button.disabled = true;
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false
+        });
+
+        video.srcObject = stream;
+        
+      } catch (error) {
+        console.error(error);
+        alert(`Camera failed: ${error.message}`);
+        button.disabled = false;
+      }
+    };
+  </script>
+</body>
+</html>

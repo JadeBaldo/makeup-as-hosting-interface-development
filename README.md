@@ -1,3 +1,15 @@
+# Current pre-performance checkpoint ? 15 October 2026
+
+The latest browser performance is frozen in [performance-2026-10-15](performance-2026-10-15/README.md), with standard and smoother-preview versions, capture-to-next-slide interaction, adjustable growth duration, and full readable subtitles constrained to two lines.
+
+Read [final decisions](performance-2026-10-15/DECISIONS.md) and [validation / remaining rehearsal work](performance-2026-10-15/VALIDATION.md). This is the freeze before performance tuning, not a claim that live performance or GPU smoothness is validated.
+
+Branch: `performance-checkpoint-2026-10-15`. Tag: `performance-preflight-2026-10-15`.
+
+---
+
+The following sections document earlier checkpoints and their historical behavior.
+
 # Altered Images — Study 03 graphics checkpoint
 
 The **Inexhaustible Slime** graphics checkpoint is in [graphics-study-03](graphics-study-03/). Start with [CHECKPOINT.md](graphics-study-03/CHECKPOINT.md) for the concept, preserved assets, verification and recovery instructions. The current Blender scene combines liquid-metal covering, boiling openings, an inexhaustible slime interior, continuous drainage and restrained vapour. It remains a separate experiment; the integrated performance below is unchanged.

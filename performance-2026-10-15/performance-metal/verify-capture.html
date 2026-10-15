@@ -1,0 +1,19 @@
+<!doctype html><body>RUNNING<script type="module">
+import * as THREE from './vendor/three/three.module.js';
+import {createCaptureGesture,exportOBJ,makeZip,createCapture} from './capture.mjs';
+const checks=[];const assert=(value,name)=>{if(!value)throw Error(name);checks.push(name);};
+try{
+ const source=await (await fetch('./app.mjs')).text();new Function(source.replace(/^import .*;$/gm,''));checks.push('app syntax');
+ const hand=Array.from({length:21},()=>({x:0,y:0,z:0}));hand[5]={x:.2,y:-.3,z:0};hand[17]={x:-.2,y:-.3,z:0};
+ const gesture=createCaptureGesture();assert(!gesture.update('closed',hand,.2),'fist alone ignored');gesture.update('open',hand,.25);assert(gesture.update('closed',hand,.13),'open to fist triggers');assert(!gesture.update('closed',hand,.3),'held fist does not repeat');gesture.update('open',hand,.25);gesture.update('released',null,.1);assert(!gesture.update('closed',hand,.2),'lost tracking disarms');gesture.update('open',hand,.25);assert(!gesture.update('closed',hand,2.1),'expired open hand ignored');
+ const scene=new THREE.Scene(),geometry=new THREE.PlaneGeometry(2,2);geometry.attributes.position.setZ(0,3);const mesh=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial());mesh.position.x=10;scene.add(mesh);
+ const exported=exportOBJ(scene,'test');assert(exported.obj.includes('v 9 1 3'),'current deformed vertex and world transform exported');mesh.visible=false;assert(exportOBJ(scene,'test').meshCount===0,'hidden meshes excluded');mesh.visible=true;
+ const canvas=document.createElement('canvas');canvas.width=64;canvas.height=64;const ctx=canvas.getContext('2d');ctx.fillStyle='purple';ctx.fillRect(0,0,64,64);const ink=document.createElement('canvas');ink.width=64;ink.height=64;
+ const webcam=document.createElement('canvas');webcam.width=64;webcam.height=64;webcam.readyState=2;webcam.videoWidth=64;webcam.videoHeight=64;webcam.getContext('2d').fillStyle='lime';webcam.getContext('2d').fillRect(0,0,64,64);
+ let resets=0,download=null;const statuses=[];const original=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){download=fetch(this.href).then(r=>r.blob());};
+ const recording=createCapture({renderer:{domElement:canvas,render(){}},scene,camera:{},video:webcam,ink,reset(){resets++;geometry.attributes.position.setZ(0,0);},metadata:()=>({slide:1}),onStatus:message=>statuses.push(message)});
+ recording.frame();recording.start();await new Promise(r=>setTimeout(r,350));await recording.capture();assert(recording.recording,'video restarts after stopping');assert(resets===1,'scene reset once');assert(recording.saved,'capture retained for retry');assert(!statuses.some(s=>s.startsWith('Capture failed')),'capture completes');
+ const blob=await download;const data=new Uint8Array(await blob.arrayBuffer());let text='';for(const byte of data)text+=String.fromCharCode(byte);HTMLAnchorElement.prototype.click=original;
+ document.body.textContent=JSON.stringify({checks,zip:btoa(text),statuses});
+}catch(e){document.body.textContent='FAIL: '+e.stack;}
+</script>
